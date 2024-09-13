@@ -5,11 +5,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 import com.example.timerecord.dao.RecordDao
+import com.example.timerecord.dao.TypeDao
+import com.example.timerecord.entity.Record
+import com.example.timerecord.entity.Type
 
-@Database(entities = [Record::class], version = 1)
+@Database(entities = [Record::class, Type::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun recordDao(): RecordDao
-
+    abstract fun typeDao(): TypeDao
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 
