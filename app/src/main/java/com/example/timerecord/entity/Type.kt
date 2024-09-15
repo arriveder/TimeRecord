@@ -8,6 +8,6 @@ data class Type(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val typeName: String,
-    val userId: Int,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val userId: Int
 )

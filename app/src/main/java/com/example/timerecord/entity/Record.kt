@@ -1,6 +1,5 @@
 package com.example.timerecord.entity
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -8,7 +7,6 @@ import androidx.room.PrimaryKey
 data class Record(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    @ColumnInfo(name = "record")
     val timeRecord: String,
     val createdAt: Long = System.currentTimeMillis(),
     val userId: Int
