@@ -11,7 +11,7 @@ interface RecordDao {
     @Insert
     suspend fun insert(record: Record)
 
-    @Query("SELECT * FROM record")
-    fun getRecords(): Flow<List<Record>>
+    @Query("SELECT * FROM records WHERE date = :date")
+    fun getRecordsByDate(date: String): List<Record>
 
 }

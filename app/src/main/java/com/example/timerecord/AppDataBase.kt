@@ -6,19 +6,16 @@ import androidx.room.RoomDatabase
 import android.content.Context
 import com.example.timerecord.dao.RecordDao
 import com.example.timerecord.dao.TypeDao
-import com.example.timerecord.dao.TypeQueueDao
 import com.example.timerecord.dao.UserDao
 import com.example.timerecord.entity.Record
 import com.example.timerecord.entity.Type
-import com.example.timerecord.entity.TypeQueue
 import com.example.timerecord.entity.User
 
-@Database(entities = [Record::class, Type::class, TypeQueue::class, User::class], version = 1)
+@Database(entities = [Record::class, Type::class, User::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun recordDao(): RecordDao
     abstract fun typeDao(): TypeDao
     abstract fun userDao(): UserDao
-    abstract fun typeQueueDao(): TypeQueueDao
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 
