@@ -3,12 +3,13 @@ package com.example.timerecord.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "users")
 data class User(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val userName: String,
-    val password: String,
-    val email: String,
-    val createdAt: Long = System.currentTimeMillis()
-    )
+    @PrimaryKey val id: String,
+    val username: String,
+    val email: String?,
+    val passwordHash: String?,
+    val createdAt: Long,
+    val updatedAt: Long
+)
+
