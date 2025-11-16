@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.timerecord.entity.RecordTagRel
 import com.example.timerecord.entity.Tag
+import com.example.timerecord.entity.Record
 
 @Dao
 interface RecordTagRelDao {
