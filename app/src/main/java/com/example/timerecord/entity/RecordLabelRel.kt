@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "record_tag_rel",
+    tableName = "record_label_rel",
     foreignKeys = [
         ForeignKey(
             entity = Record::class,
@@ -16,18 +16,18 @@ import androidx.room.PrimaryKey
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = Tag::class,
+            entity = Label::class,
             parentColumns = ["id"],
-            childColumns = ["tag_id"],
+            childColumns = ["label_id"],
             onDelete = ForeignKey.CASCADE
         )
     ],
-    indices = [Index(value = ["record_id"]), Index(value = ["tag_id"]),
-        Index(value = ["record_id", "tag_id"], unique = true)]
+    indices = [Index(value = ["record_id"]), Index(value = ["label_id"]),
+        Index(value = ["record_id", "label_id"], unique = true)]
 )
-data class RecordTagRel(
+data class RecordLabelRel(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "record_id") val recordId: String,
-    @ColumnInfo(name = "tag_id") val tagId: String
+    @ColumnInfo(name = "label_id") val labelId: String
 )
 

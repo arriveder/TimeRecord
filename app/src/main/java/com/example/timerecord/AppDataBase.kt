@@ -5,20 +5,20 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 import com.example.timerecord.dao.RecordDao
-import com.example.timerecord.dao.RecordTagRelDao
-import com.example.timerecord.dao.TagDao
+import com.example.timerecord.dao.RecordLabelRelDao
+import com.example.timerecord.dao.LabelDao
 import com.example.timerecord.dao.UserDao
 import com.example.timerecord.entity.Record
-import com.example.timerecord.entity.RecordTagRel
-import com.example.timerecord.entity.Tag
+import com.example.timerecord.entity.RecordLabelRel
+import com.example.timerecord.entity.Label
 import com.example.timerecord.entity.User
 
 @Database(
     entities = [
         User::class,
         Record::class,
-        Tag::class,
-        RecordTagRel::class
+        Label::class,
+        RecordLabelRel::class
     ],
     version = 1,
     exportSchema = true
@@ -28,9 +28,9 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun recordDao(): RecordDao
 
-    abstract fun tagDao(): TagDao
+    abstract fun labelDao(): LabelDao
 
-    abstract fun recordTagRelDao(): RecordTagRelDao
+    abstract fun recordLabelRelDao(): RecordLabelRelDao
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null
 

@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "tags",
+    tableName = "labels",
     foreignKeys = [
         ForeignKey(
             entity = User::class,
@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [Index(value = ["user_id", "name"], unique = true)]
 )
-data class Tag(
+data class Label(
     @PrimaryKey val id: String,
     @ColumnInfo(name = "user_id") val userId: String,
     val name: String,
