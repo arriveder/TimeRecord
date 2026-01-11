@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.example.timerecord.entity.Label
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar

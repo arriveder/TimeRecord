@@ -12,8 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.timerecord.R
 import com.example.timerecord.RecordWithLabels
 import com.google.android.material.chip.Chip
-import java.text.SimpleDateFormat
-import java.util.*
 
 class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHolder>(RecordDiffCallback()) {
 
