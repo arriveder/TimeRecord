@@ -148,6 +148,39 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
             emptyList()
         }
     }
+
+    suspend fun getDistinctDates(userId: String = DEFAULT_USER_ID): List<String> {
+        return try {
+            val records = recordRepository.getRecordsByUser(userId)
+            records.map { it.date }
+                .distinct()
+                .sortedDescending()
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun getRecordsWithLabelsByDate(
+        userId: String = DEFAULT_USER_ID,
+        date: String?
+    ): List<RecordWithLabels> {
+        return try {
+            val records = if (date == null) {
+                recordRepository.getRecordsByUser(userId)
+            } else {
+                recordRepository.getRecordsByUser(userId).filter { it.date == date }
+            }
+            records.map { record ->
+                val labelRels = recordLabelRelRepository.getRecordLabelRelsByRecordId(record.id)
+                val labels = labelRels.mapNotNull { rel ->
+                    labelRepository.getLabelById(rel.labelId)
+                }
+                RecordWithLabels(record, labels)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }
 
 data class RecordWithLabels(

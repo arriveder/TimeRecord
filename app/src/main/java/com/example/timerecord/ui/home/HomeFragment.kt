@@ -11,7 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.timerecord.RecordViewModel
 import com.example.timerecord.adapter.RecordAdapter
 import com.example.timerecord.databinding.FragmentHomeBinding
+import com.google.android.material.datepicker.MaterialDatePicker
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment() {
 
@@ -20,6 +24,9 @@ class HomeFragment : Fragment() {
 
     private lateinit var recordViewModel: RecordViewModel
     private lateinit var recordAdapter: RecordAdapter
+
+    private var selectedDate: String? = null
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +43,7 @@ class HomeFragment : Fragment() {
         recordViewModel = ViewModelProvider(this)[RecordViewModel::class.java]
 
         setupRecyclerView()
-        loadRecords()
+        setupDateFilter()
     }
 
     private fun setupRecyclerView() {
@@ -48,11 +55,51 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun loadRecords() {
+    private fun setupDateFilter() {
+        binding.tvDateFilter.apply {
+            text = "全部日期"
+
+            setOnClickListener {
+                showDatePicker()
+            }
+        }
+
+        loadRecords(null)
+    }
+
+    private fun showDatePicker() {
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("选择日期")
+            .setSelection(
+                selectedDate?.let {
+                    dateFormat.parse(it)?.time
+                } ?: MaterialDatePicker.todayInUtcMilliseconds()
+            )
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            selectedDate = dateFormat.format(Date(selection))
+            binding.tvDateFilter.text = selectedDate
+            loadRecords(selectedDate)
+        }
+
+        datePicker.addOnNegativeButtonClickListener {
+            // 用户点击取消，不执行任何操作
+        }
+
+        datePicker.addOnCancelListener {
+            // 用户取消，不执行任何操作
+        }
+
+        datePicker.show(childFragmentManager, "DATE_PICKER")
+    }
+
+    private fun loadRecords(selectedDate: String?) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val recordsWithLabels = recordViewModel.getRecordsWithLabels(
-                    RecordViewModel.DEFAULT_USER_ID
+                val recordsWithLabels = recordViewModel.getRecordsWithLabelsByDate(
+                    RecordViewModel.DEFAULT_USER_ID,
+                    selectedDate
                 )
 
                 if (recordsWithLabels.isEmpty()) {
@@ -72,7 +119,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadRecords()
+        setupDateFilter()
     }
 
     override fun onDestroyView() {
