@@ -85,6 +85,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                     )
                     recordLabelRelRepository.insertRecordLabelRel(rel)
                 }
+
                 _saveResult.postValue(Result.success(recordId))
             } catch (e: Exception) {
                 _saveResult.postValue(Result.failure(e))

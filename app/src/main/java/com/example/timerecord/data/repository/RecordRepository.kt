@@ -27,7 +27,7 @@ class RecordRepository(
     suspend fun createRecord(
         userId: String,
         note: String? = null
-    ) {
+    ): String {
         val now = System.currentTimeMillis()
 
         val ldt = Instant.ofEpochMilli(now)
@@ -44,8 +44,9 @@ class RecordRepository(
 
         val amPm = if (ldt.hour < 12) "AM" else "PM"
 
+        val recordId = UUID.randomUUID().toString()
         val record = Record(
-            id = UUID.randomUUID().toString(),
+            id = recordId,
             userId = userId,
             timestamp = now,
             date = date,
@@ -58,5 +59,6 @@ class RecordRepository(
         )
 
         recordDao.insertRecord(record)
+        return recordId
     }
 }

@@ -9,6 +9,10 @@ import java.util.UUID
 class RecordLabelRelRepository(
     private val dao: RecordLabelRelDao
 ) {
+    suspend fun insertRecordLabelRel(rel: RecordLabelRel) {
+        dao.insertRelation(rel)
+    }
+
     suspend fun addLabelToRecord(recordId: String, labelId: String) {
         val rel = RecordLabelRel(
             id = UUID.randomUUID().toString(),
@@ -29,4 +33,7 @@ class RecordLabelRelRepository(
 
     suspend fun getRecordsByLabel(labelId: String): List<Record> =
         dao.getRecordsByLabel(labelId)
+
+    suspend fun getRecordLabelRelsByRecordId(recordId: String): List<RecordLabelRel> =
+        dao.getRecordLabelRelsByRecordId(recordId)
 }
