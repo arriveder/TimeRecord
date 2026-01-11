@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 class RecordViewModel(application: Application) : AndroidViewModel(application) {
-    private val database = com.example.timerecord.AppDatabase.getDatabase(application)
+    private val database = AppDatabase.getDatabase(application)
     private val recordRepository = RecordRepository(database.recordDao())
     private val labelRepository = LabelRepository(database.labelDao())
     private val recordLabelRelRepository = RecordLabelRelRepository(database.recordLabelRelDao())
