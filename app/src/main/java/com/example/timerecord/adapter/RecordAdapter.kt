@@ -1,5 +1,7 @@
 package com.example.timerecord.adapter
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,27 @@ import java.util.*
 
 class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHolder>(RecordDiffCallback()) {
 
+    private fun getColorFromString(colorString: String): Int {
+        return try {
+            Color.parseColor(colorString)
+        } catch (e: Exception) {
+            Color.GRAY
+        }
+    }
+
+    private fun getTextColorForBackground(backgroundColor: Int): Int {
+        val red = Color.red(backgroundColor)
+        val green = Color.green(backgroundColor)
+        val blue = Color.blue(backgroundColor)
+        val brightness = (red * 299 + green * 587 + blue * 114) / 1000
+
+        return if (brightness > 128) {
+            Color.BLACK
+        } else {
+            Color.WHITE
+        }
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecordViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_record, parent, false)
@@ -26,7 +49,7 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
         holder.bind(item)
     }
 
-    class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvTime: TextView = itemView.findViewById(R.id.tv_time)
         private val tvDate: TextView = itemView.findViewById(R.id.tv_date)
         private val tvNote: TextView = itemView.findViewById(R.id.tv_note)
@@ -57,8 +80,14 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
                     val chip = Chip(itemView.context).apply {
                         text = label.name
                         isClickable = false
-                        setChipBackgroundColorResource(android.R.color.holo_blue_light)
-                        setTextColor(android.R.color.white)
+
+                        val bgColor = if (label.color != null) {
+                            this@RecordAdapter.getColorFromString(label.color)
+                        } else {
+                            Color.parseColor("#03A9F4")
+                        }
+                        chipBackgroundColor = ColorStateList.valueOf(bgColor)
+                        setTextColor(this@RecordAdapter.getTextColorForBackground(bgColor))
                     }
                     chipGroupLabels.addView(chip)
                 }
