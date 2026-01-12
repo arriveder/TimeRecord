@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -14,6 +15,11 @@ import com.example.timerecord.RecordWithLabels
 import com.google.android.material.chip.Chip
 
 class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHolder>(RecordDiffCallback()) {
+
+    private var selectionMode: Boolean = false
+    private val selectedIds = mutableSetOf<String>()
+    var onSelectionChanged: ((Int) -> Unit)? = null
+    var onItemClickListener: ((String) -> Unit)? = null
 
     private fun getColorFromString(colorString: String): Int {
         return try {
@@ -44,8 +50,47 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
 
     override fun onBindViewHolder(holder: RecordViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, selectionMode, selectedIds.contains(item.record.id))
     }
+
+    fun setSelectionMode(mode: Boolean) {
+        if (selectionMode != mode) {
+            selectionMode = mode
+            if (!mode) {
+                selectedIds.clear()
+            }
+            onSelectionChanged?.invoke(selectedIds.size)
+            notifyDataSetChanged()
+        }
+    }
+
+    fun toggleSelection(recordId: String) {
+        if (selectedIds.contains(recordId)) {
+            selectedIds.remove(recordId)
+        } else {
+            selectedIds.add(recordId)
+        }
+        onSelectionChanged?.invoke(selectedIds.size)
+        notifyDataSetChanged()
+    }
+
+    fun selectAll() {
+        currentList.forEach { item ->
+            selectedIds.add(item.record.id)
+        }
+        onSelectionChanged?.invoke(selectedIds.size)
+        notifyDataSetChanged()
+    }
+
+    fun clearSelection() {
+        selectedIds.clear()
+        onSelectionChanged?.invoke(0)
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedIds(): Set<String> = selectedIds.toSet()
+
+    fun getSelectedCount(): Int = selectedIds.size
 
     inner class RecordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvTime: TextView = itemView.findViewById(R.id.tv_time)
@@ -53,8 +98,9 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
         private val tvNote: TextView = itemView.findViewById(R.id.tv_note)
         private val chipGroupLabels: com.google.android.material.chip.ChipGroup = itemView.findViewById(R.id.chip_group_labels)
         private val tvEmptyLabels: TextView = itemView.findViewById(R.id.tv_empty_labels)
+        private val ivSelectionDot: ImageView = itemView.findViewById(R.id.iv_selection_dot)
 
-        fun bind(item: RecordWithLabels) {
+        fun bind(item: RecordWithLabels, selectionMode: Boolean, isSelected: Boolean) {
             val record = item.record
             val labels = item.labels
 
@@ -88,6 +134,23 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
                         setTextColor(this@RecordAdapter.getTextColorForBackground(bgColor))
                     }
                     chipGroupLabels.addView(chip)
+                }
+            }
+
+            // Handle selection mode
+            if (selectionMode) {
+                ivSelectionDot.visibility = View.VISIBLE
+                ivSelectionDot.setImageResource(if (isSelected) R.drawable.ic_selected else R.drawable.ic_unselected)
+            } else {
+                ivSelectionDot.visibility = View.GONE
+            }
+
+            // Handle click
+            itemView.setOnClickListener {
+                if (selectionMode) {
+                    toggleSelection(record.id)
+                } else {
+                    onItemClickListener?.invoke(record.id)
                 }
             }
         }

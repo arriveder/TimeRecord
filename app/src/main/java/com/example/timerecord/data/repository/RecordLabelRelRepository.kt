@@ -36,4 +36,7 @@ class RecordLabelRelRepository(
 
     suspend fun getRecordLabelRelsByRecordId(recordId: String): List<RecordLabelRel> =
         dao.getRecordLabelRelsByRecordId(recordId)
+
+    suspend fun deleteRecordLabelRelsByRecordId(recordId: String) =
+        dao.deleteRecordLabelRelsByRecordId(recordId)
 }

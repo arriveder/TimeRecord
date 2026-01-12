@@ -181,6 +181,17 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
             emptyList()
         }
     }
+
+    suspend fun deleteRecordById(recordId: String) {
+        try {
+            // Delete record-label relationships first
+            recordLabelRelRepository.deleteRecordLabelRelsByRecordId(recordId)
+            // Delete the record
+            recordRepository.deleteRecordById(recordId)
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }
 
 data class RecordWithLabels(
