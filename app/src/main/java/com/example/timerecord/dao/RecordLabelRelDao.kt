@@ -32,6 +32,14 @@ interface RecordLabelRelDao {
     @Query("DELETE FROM record_label_rel WHERE record_id = :recordId")
     suspend fun deleteRecordLabelRelsByRecordId(recordId: String)
 
+    // 根据标签ID查询所有关联关系
+    @Query("SELECT * FROM record_label_rel WHERE label_id = :labelId")
+    suspend fun getRecordLabelRelsByLabelId(labelId: String): List<RecordLabelRel>
+
+    // 根据标签ID删除所有关联关系
+    @Query("DELETE FROM record_label_rel WHERE label_id = :labelId")
+    suspend fun deleteRecordLabelRelsByLabelId(labelId: String)
+
     // 根据记录查询所有标签
     @Query("""
         SELECT l.* FROM labels l

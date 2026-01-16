@@ -24,6 +24,8 @@ class RecordRepository(
 
     suspend fun deleteRecordById(id: String) = recordDao.deleteRecordById(id)
 
+    suspend fun updateRecord(record: Record) = recordDao.updateRecord(record)
+
     suspend fun createRecord(
         userId: String,
         note: String? = null

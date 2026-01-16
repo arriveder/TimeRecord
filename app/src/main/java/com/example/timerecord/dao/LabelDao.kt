@@ -27,8 +27,8 @@ interface LabelDao {
     suspend fun getLabelsByUser(userId: String): List<Label>
 
     @Query("""
-        SELECT * FROM labels 
-        WHERE user_id = :userId AND name = :name 
+        SELECT * FROM labels
+        WHERE user_id = :userId AND name = :name
         LIMIT 1
     """)
     suspend fun getLabelByName(userId: String, name: String): Label?
@@ -38,4 +38,7 @@ interface LabelDao {
 
     @Query("DELETE FROM labels WHERE id = :id")
     suspend fun deleteLabelById(id: String)
+
+    @androidx.room.Update
+    suspend fun updateLabel(label: Label)
 }

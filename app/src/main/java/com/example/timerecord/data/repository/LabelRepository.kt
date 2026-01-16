@@ -19,4 +19,6 @@ class LabelRepository(
     suspend fun deleteLabel(label: Label) = labelDao.deleteLabel(label)
 
     suspend fun deleteLabelById(id: String) = labelDao.deleteLabelById(id)
+
+    suspend fun updateLabel(label: Label) = labelDao.updateLabel(label)
 }

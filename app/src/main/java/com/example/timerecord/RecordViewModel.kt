@@ -192,6 +192,109 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
             throw e
         }
     }
+
+    fun updateRecord(recordId: String, note: String?, labelIds: List<String>) {
+        viewModelScope.launch {
+            try {
+                // Get existing record
+                val existingRecord = recordRepository.getRecordById(recordId)
+                if (existingRecord == null) {
+                    _saveResult.postValue(Result.failure(Exception("Record not found")))
+                    return@launch
+                }
+
+                // Update record with new note and updated timestamp
+                val updatedRecord = existingRecord.copy(
+                    note = note,
+                    updatedAt = System.currentTimeMillis()
+                )
+                recordRepository.updateRecord(updatedRecord)
+
+                // Update label relationships: delete old ones and create new ones
+                recordLabelRelRepository.deleteRecordLabelRelsByRecordId(recordId)
+                labelIds.forEach { labelId ->
+                    val rel = RecordLabelRel(
+                        id = UUID.randomUUID().toString(),
+                        recordId = recordId,
+                        labelId = labelId
+                    )
+                    recordLabelRelRepository.insertRecordLabelRel(rel)
+                }
+
+                _saveResult.postValue(Result.success(recordId))
+            } catch (e: Exception) {
+                _saveResult.postValue(Result.failure(e))
+            }
+        }
+    }
+
+    suspend fun getRecordWithLabels(recordId: String): RecordWithLabels? {
+        return try {
+            val record = recordRepository.getRecordById(recordId) ?: return null
+            val labelRels = recordLabelRelRepository.getRecordLabelRelsByRecordId(recordId)
+            val labels = labelRels.mapNotNull { rel ->
+                labelRepository.getLabelById(rel.labelId)
+            }
+            RecordWithLabels(record, labels)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    // Label management methods
+    fun updateLabel(labelId: String, name: String) {
+        viewModelScope.launch {
+            try {
+                val existingLabel = labelRepository.getLabelById(labelId)
+                if (existingLabel == null) {
+                    _createLabelResult.postValue(Result.failure(Exception("Label not found")))
+                    return@launch
+                }
+
+                // Check if new name conflicts with another label
+                val labelWithSameName = labelRepository.getLabelByName(DEFAULT_USER_ID, name)
+                if (labelWithSameName != null && labelWithSameName.id != labelId) {
+                    _createLabelResult.postValue(Result.failure(Exception("Label name already exists")))
+                    return@launch
+                }
+
+                val updatedLabel = existingLabel.copy(
+                    name = name,
+                    updatedAt = System.currentTimeMillis()
+                )
+                labelRepository.updateLabel(updatedLabel)
+                _createLabelResult.postValue(Result.success(updatedLabel))
+
+                loadLabels(DEFAULT_USER_ID)
+            } catch (e: Exception) {
+                _createLabelResult.postValue(Result.failure(e))
+            }
+        }
+    }
+
+    fun deleteLabel(labelId: String) {
+        viewModelScope.launch {
+            try {
+                // Delete all record-label relationships for this label
+                recordLabelRelRepository.deleteRecordLabelRelsByLabelId(labelId)
+                // Delete the label
+                labelRepository.deleteLabelById(labelId)
+                _saveResult.postValue(Result.success(labelId))
+
+                loadLabels(DEFAULT_USER_ID)
+            } catch (e: Exception) {
+                _saveResult.postValue(Result.failure(e))
+            }
+        }
+    }
+
+    suspend fun getLabelUsageCount(labelId: String): Int {
+        return try {
+            recordLabelRelRepository.getRecordLabelRelsByLabelId(labelId).size
+        } catch (e: Exception) {
+            0
+        }
+    }
 }
 
 data class RecordWithLabels(

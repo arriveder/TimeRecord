@@ -52,6 +52,24 @@
             android:exported="false"
             android:theme="@style/Theme.TimeRecord.NoActionBar">
         </activity>
+
+        <activity
+            android:name=".EditRecordActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TimeRecord.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".LabelManagementActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TimeRecord.NoActionBar">
+        </activity>
+
+        <activity
+            android:name=".RecordDetailActivity"
+            android:exported="false"
+            android:theme="@style/Theme.TimeRecord.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
