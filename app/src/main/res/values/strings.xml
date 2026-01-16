@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Time Record</string>
     <string name="title_home">时间纪录</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_notifications">数据统计</string>
     <string name="create_record_activity_title">新纪录</string>
 </resources>
