@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Modern color system - Dark mode -->
+
+    <!-- Primary brand color - Modern blue -->
+    <color name="primary">#4DABF7</color>
+    <color name="primary_variant">#3B8DC4</color>
+    <color name="on_primary">#000000</color>
+
+    <!-- Secondary color - Subtle teal -->
+    <color name="secondary">#03DAC6</color>
+    <color name="secondary_variant">#019A8C</color>
+    <color name="on_secondary">#000000</color>
+
+    <!-- Surface and background colors - Dark mode -->
+    <color name="surface">#1E1E1E</color>
+    <color name="surface_variant">#2D2D2D</color>
+    <color name="on_surface">#E6E6E6</color>
+    <color name="on_surface_variant">#CAC4D0</color>
+
+    <!-- Background colors -->
+    <color name="background">#121212</color>
+    <color name="on_background">#E6E6E6</color>
+
+    <!-- Outline and borders -->
+    <color name="outline">#49454F</color>
+    <color name="outline_variant">#4E4852</color>
+
+    <!-- Status colors -->
+    <color name="error">#F2B8B5</color>
+    <color name="on_error">#601410</color>
+
+    <!-- Text colors - Hierarchical -->
+    <color name="text_primary">#E6E6E6</color>
+    <color name="text_secondary">#CAC4D0</color>
+    <color name="text_disabled">#6D6A72</color>
+
+    <!-- Selection colors -->
+    <color name="selection_indicator">#4DABF7</color>
+    <color name="selection_background">#1A3B5C</color>
+
+    <!-- Legacy colors for compatibility -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

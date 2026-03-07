@@ -4,19 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    android:layout_margin="@dimen/spacing_tight"
+    app:cardCornerRadius="@dimen/corner_small"
+    app:cardElevation="@dimen/card_elevation_minimal"
+    app:cardBackgroundColor="@color/surface_variant"
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_normal">
 
         <!-- Color indicator -->
         <View
             android:id="@+id/view_color_indicator"
-            android:layout_width="8dp"
+            android:layout_width="4dp"
             android:layout_height="0dp"
             android:background="#03A9F4"
             app:layout_constraintTop_toTopOf="parent"
@@ -28,56 +30,64 @@
             android:id="@+id/tv_label_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:text="工作"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:textFontWeight="500"
+            android:textColor="@color/text_primary"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/view_color_indicator"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit" />
+            app:layout_constraintEnd_toStartOf="@id/layout_actions"
+            tools:targetApi="p" />
 
         <!-- Usage count -->
         <TextView
             android:id="@+id/tv_usage_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="@dimen/spacing_normal"
             android:text="使用 5 次"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"
+            android:textSize="13sp"
+            android:textColor="@color/text_secondary"
             app:layout_constraintTop_toBottomOf="@id/tv_label_name"
             app:layout_constraintStart_toEndOf="@id/view_color_indicator"
-            app:layout_constraintEnd_toStartOf="@id/btn_edit" />
+            app:layout_constraintEnd_toStartOf="@id/layout_actions" />
 
-        <!-- Edit button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_edit"
+        <!-- Action buttons -->
+        <LinearLayout
+            android:id="@+id/layout_actions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="编辑"
-            android:textSize="14sp"
-            android:backgroundTint="#E3F2FD"
-            android:textColor="#1976D2"
-            style="@style/Widget.Material3.Button"
+            android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btn_delete" />
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Delete button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:text="删除"
-            android:textSize="14sp"
-            android:backgroundTint="#FFEBEE"
-            android:textColor="#D32F2F"
-            style="@style/Widget.Material3.Button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Edit button - Icon button -->
+            <ImageButton
+                android:id="@+id/btn_edit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_edit"
+                android:contentDescription="编辑"
+                android:padding="8dp"
+                app:tint="@color/text_secondary" />
+
+            <!-- Delete button - Icon button -->
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_delete"
+                android:contentDescription="删除"
+                android:padding="8dp"
+                android:layout_marginStart="@dimen/spacing_tight"
+                app:tint="@color/error" />
+
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
