@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spacing for modern, breathable UI -->
+    <dimen name="spacing_tight">8dp</dimen>
+    <dimen name="spacing_normal">16dp</dimen>
+    <dimen name="spacing_loose">24dp</dimen>
+    <dimen name="spacing_extra_loose">32dp</dimen>
+    <dimen name="spacing_ultra_loose">48dp</dimen>
+</resources>

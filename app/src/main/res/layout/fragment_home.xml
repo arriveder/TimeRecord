@@ -4,59 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".ui.home.HomeFragment">
 
+    <!-- Date filter - Clean text button style -->
     <TextView
         android:id="@+id/tv_date_filter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="@dimen/spacing_loose"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:background="?attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:drawableEnd="@android:drawable/arrow_down_float"
+        android:drawableTint="@color/text_secondary"
         android:hint="选择日期"
         android:minHeight="48dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
+        android:paddingStart="@dimen/spacing_normal"
+        android:paddingEnd="@dimen/spacing_normal"
         android:textSize="16sp"
+        android:textColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_label_management" />
+        app:layout_constraintEnd_toStartOf="@id/btn_label_management"
+        tools:targetApi="m" />
 
+    <!-- Label management button -->
     <ImageButton
         android:id="@+id/btn_label_management"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="标签管理"
-        android:padding="8dp"
+        android:padding="12dp"
         android:src="@android:drawable/ic_menu_agenda"
+        app:tint="@color/text_secondary"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_select_mode" />
+        app:layout_constraintEnd_toStartOf="@id/btn_select_mode"
+        tools:targetApi="m" />
 
+    <!-- Selection mode button -->
     <ImageButton
         android:id="@+id/btn_select_mode"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/spacing_loose"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="选择模式"
-        android:padding="8dp"
+        android:padding="12dp"
         android:src="@drawable/ic_more"
+        app:tint="@color/text_secondary"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:targetApi="m" />
 
+    <!-- Record list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_records"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/spacing_tight"
         android:clipToPadding="false"
-        android:paddingBottom="8dp"
+        android:paddingBottom="@dimen/spacing_tight"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_date_filter"
         app:layout_constraintBottom_toTopOf="@id/layout_bottom_actions"
@@ -64,6 +76,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_record" />
 
+    <!-- Empty state -->
     <TextView
         android:id="@+id/tv_empty"
         android:layout_width="wrap_content"
@@ -71,7 +84,7 @@
         android:text="暂无记录\n点击下方 + 按钮创建记录"
         android:textAlignment="center"
         android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
+        android:textColor="@color/text_disabled"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,18 +92,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:visibility="visible" />
 
+    <!-- Bottom actions bar - Minimal style -->
     <LinearLayout
         android:id="@+id/layout_bottom_actions"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@android:color/white"
-        android:elevation="8dp"
+        android:background="@color/surface"
+        android:elevation="2dp"
         android:visibility="gone"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingStart="@dimen/spacing_loose"
+        android:paddingEnd="@dimen/spacing_loose"
+        android:paddingTop="@dimen/spacing_normal"
+        android:paddingBottom="@dimen/spacing_normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -99,19 +113,19 @@
             android:id="@+id/btn_select_all"
             android:layout_width="wrap_content"
             android:layout_height="56dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/spacing_normal"
             android:minWidth="100dp"
             android:text="全选"
             android:textSize="16sp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="16dp"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_loose"
             app:icon="@drawable/ic_selected"
             app:iconGravity="textStart"
-            app:iconPadding="8dp"
-            app:iconSize="24dp"
-            app:strokeColor="@android:color/transparent"
+            app:iconPadding="@dimen/spacing_tight"
+            app:iconSize="20dp"
+            app:strokeColor="@color/outline"
             style="@style/Widget.Material3.Button.OutlinedButton" />
 
         <com.google.android.material.button.MaterialButton
@@ -121,7 +135,8 @@
             android:layout_weight="1"
             android:text="删除"
             android:textSize="16sp"
-            android:backgroundTint="@android:color/holo_red_light"
+            app:backgroundTint="@color/error"
+            app:cornerRadius="@dimen/corner_small"
             style="@style/Widget.Material3.Button" />
 
     </LinearLayout>
