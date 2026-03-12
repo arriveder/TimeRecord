@@ -39,7 +39,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="标签管理"
         android:padding="12dp"
-        android:src="@android:drawable/ic_menu_agenda"
+        android:src="@drawable/ic_tag"
         app:tint="@color/text_secondary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_select_mode"
