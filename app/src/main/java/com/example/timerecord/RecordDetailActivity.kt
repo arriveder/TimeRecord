@@ -18,6 +18,7 @@ import java.util.Locale
 class RecordDetailActivity : AppCompatActivity() {
 
     private lateinit var recordId: String
+    private var isDirty = false
 
     private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var tvTime24: androidx.appcompat.widget.AppCompatTextView
@@ -47,6 +48,14 @@ class RecordDetailActivity : AppCompatActivity() {
         loadRecordData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isDirty) {
+            loadRecordData()
+            isDirty = false
+        }
+    }
+
     private fun bindViews() {
         toolbar = findViewById(R.id.toolbar)
         tvTime24 = findViewById(R.id.tv_time_24)
@@ -74,7 +83,7 @@ class RecordDetailActivity : AppCompatActivity() {
             val intent = Intent(this, EditRecordActivity::class.java).apply {
                 putExtra(EditRecordActivity.EXTRA_RECORD_ID, recordId)
             }
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_EDIT_RECORD)
         }
     }
 
@@ -181,7 +190,15 @@ class RecordDetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_EDIT_RECORD && resultCode == RESULT_OK) {
+            isDirty = true
+        }
+    }
+
     companion object {
         const val EXTRA_RECORD_ID = "record_id"
+        const val REQUEST_EDIT_RECORD = 1001
     }
 }

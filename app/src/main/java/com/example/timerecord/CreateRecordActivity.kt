@@ -1,6 +1,7 @@
 package com.example.timerecord
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -156,28 +157,56 @@ class CreateRecordActivity : AppCompatActivity() {
         tvLabelsTitle.text = "选择标签"
 
         availableLabels.forEach { label ->
+            val labelColor = if (label.color != null) {
+                getColorFromString(label.color)
+            } else {
+                getColorFromString("#80CBC4")
+            }
+
             val chip = Chip(this).apply {
                 text = label.name
                 isCheckable = true
                 isClickable = true
-                chipBackgroundColor = if (label.color != null) {
-                    ColorStateList.valueOf(getColorFromString(label.color))
-                } else {
-                    getColorStateList(R.color.teal_200)
-                }
 
-                label.color?.let { color ->
-                    setTextColor(getTextColorForBackground(getColorFromString(color)))
-                }
+                chipStrokeColor = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf()
+                    ),
+                    intArrayOf(
+                        Color.TRANSPARENT,
+                        labelColor
+                    )
+                )
+
+                chipBackgroundColor = ColorStateList(
+                    arrayOf(
+                        intArrayOf(android.R.attr.state_checked),
+                        intArrayOf()
+                    ),
+                    intArrayOf(
+                        labelColor,
+                        Color.TRANSPARENT
+                    )
+                )
+
+                setTextColor(labelColor)
 
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         selectedLabelIds.add(label.id)
+                        setTextColor(getTextColorForBackground(labelColor))
                     } else {
                         selectedLabelIds.remove(label.id)
+                        setTextColor(labelColor)
                     }
                 }
             }
+
+            if (selectedLabelIds.contains(label.id)) {
+                chip.setTextColor(getTextColorForBackground(labelColor))
+            }
+
             chipGroupLabels.addView(chip)
         }
     }
@@ -235,10 +264,19 @@ class CreateRecordActivity : AppCompatActivity() {
 
     private fun getRandomColor(): String {
         val colors = listOf(
-            "#F44336", "#E91E63", "#9C27B0", "#673AB7",
-            "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4",
-            "#009688", "#4CAF50", "#8BC34A", "#CDDC39",
-            "#FFEB3B", "#FFC107", "#FF9800", "#FF5722"
+            // 莫兰迪色系 - 低饱和度、柔和的颜色
+            "#B39DDB", // 柔和紫
+            "#90CAF9", // 柔和蓝
+            "#80CBC4", // 柔和青
+            "#A5D6A7", // 柔和绿
+            "#FFF59D", // 柔和黄
+            "#FFCC80", // 柔和橙
+            "#F48FB1", // 柔和粉
+            "#BCAAA4", // 柔和棕
+            "#D7CCC8", // 柔和灰棕
+            "#C5CAE9", // 柔和靛蓝
+            "#CE93D8", // 柔和紫红
+            "#81C784"  // 柔和草绿
         )
         return colors.random()
     }
