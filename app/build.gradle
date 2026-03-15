@@ -75,4 +75,7 @@ dependencies {
 
     // 测试支持
     testImplementation "androidx.room:room-testing:$room_version"
+
+    // Gson for JSON handling
+    implementation 'com.google.code.gson:gson:2.10.1'
 }
