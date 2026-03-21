@@ -241,6 +241,34 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
+    suspend fun searchRecords(query: String, userId: String = DEFAULT_USER_ID): List<RecordWithLabels> {
+        return try {
+            if (query.isBlank()) {
+                // 如果查询为空，返回所有记录
+                getRecordsWithLabels(userId)
+            } else {
+                // 搜索笔记和标签，合并结果
+                val recordsByNote = recordRepository.searchRecordsByNote(userId, query)
+                val recordsByLabel = recordRepository.searchRecordsByLabel(userId, query)
+
+                // 合并并去重
+                val allRecords = (recordsByNote + recordsByLabel)
+                    .distinctBy { it.id }
+
+                // 转换为 RecordWithLabels
+                allRecords.map { record ->
+                    val labelRels = recordLabelRelRepository.getRecordLabelRelsByRecordId(record.id)
+                    val labels = labelRels.mapNotNull { rel ->
+                        labelRepository.getLabelById(rel.labelId)
+                    }
+                    RecordWithLabels(record, labels)
+                }
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     // Label management methods
     fun updateLabel(labelId: String, name: String) {
         viewModelScope.launch {
