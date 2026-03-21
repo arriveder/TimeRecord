@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".EditRecordActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/background"
+        app:navigationIconTint="@color/text_primary"
+        app:title="编辑记录"
+        app:titleTextColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -27,137 +30,155 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_loose">
 
-    <!-- 原始时间显示（只读） -->
-    <TextView
-        android:id="@+id/tv_time_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="记录时间"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="16dp" />
-
-    <TextView
-        android:id="@+id/tv_current_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="12:30:45"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/tv_time_label"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <TextView
-        android:id="@+id/tv_current_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="2024-01-15 Monday"
-        android:textSize="16sp"
-        android:textColor="@android:color/darker_gray"
-        app:layout_constraintTop_toBottomOf="@id/tv_current_time"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="4dp" />
-
-    <!-- 备注输入区域 -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/til_note"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:hint="备注（可选）"
-        app:layout_constraintTop_toBottomOf="@id/tv_current_date"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/et_note"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minLines="3"
-            android:maxLines="5"
-            android:gravity="top"
-            android:inputType="textMultiLine" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <!-- 标签选择区域 -->
-    <TextView
-        android:id="@+id/tv_labels_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="选择标签"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        app:layout_constraintTop_toBottomOf="@id/til_note"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="24dp" />
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group_labels"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_labels_title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
-
-    <!-- 添加新标签区域 -->
-    <LinearLayout
-        android:id="@+id/layout_add_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/chip_group_labels"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_new_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="新标签名称">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_new_label"
-                android:layout_width="match_parent"
+            <!-- Current time display (read-only) -->
+            <TextView
+                android:id="@+id/tv_time_label"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:imeOptions="actionDone" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:text="记录时间"
+                android:textSize="13sp"
+                android:textColor="@color/text_secondary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing_normal" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_add_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="添加"
-            android:textSize="14sp"
-            android:layout_marginStart="8dp"
-            app:strokeColor="?attr/colorPrimary"
-            android:textColor="?attr/colorPrimary"
-            style="@style/Widget.Material3.Button.OutlinedButton" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:30:45"
+                android:textSize="36sp"
+                android:textStyle="normal"
+                android:textFontWeight="500"
+                android:textColor="@color/text_primary"
+                app:layout_constraintTop_toBottomOf="@id/tv_time_label"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing_tight"
+                tools:targetApi="p" />
 
-    <!-- 保存按钮 -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_save"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="16dp"
-        android:text="保存修改"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/layout_add_label"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <TextView
+                android:id="@+id/tv_current_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2024-01-15 Monday"
+                android:textSize="15sp"
+                android:textColor="@color/text_secondary"
+                app:layout_constraintTop_toBottomOf="@id/tv_current_time"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing_tight" />
+
+            <!-- Note input area -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_note"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="备注（可选）"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/outline"
+                app:hintTextColor="@color/text_secondary"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                app:layout_constraintTop_toBottomOf="@id/tv_current_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/spacing_extra_loose">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_note"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minLines="3"
+                    android:maxLines="5"
+                    android:gravity="top"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/text_primary" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Label selection area -->
+            <TextView
+                android:id="@+id/tv_labels_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="选择标签"
+                android:textSize="15sp"
+                android:textStyle="normal"
+                android:textFontWeight="500"
+                android:textColor="@color/text_primary"
+                app:layout_constraintTop_toBottomOf="@id/til_note"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="@dimen/spacing_extra_loose"
+                tools:targetApi="p" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_labels"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:singleSelection="false"
+                app:selectionRequired="false"
+                app:layout_constraintTop_toBottomOf="@id/tv_labels_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/spacing_normal" />
+
+            <!-- Add new label area -->
+            <LinearLayout
+                android:id="@+id/layout_add_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                app:layout_constraintTop_toBottomOf="@id/chip_group_labels"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="@dimen/spacing_loose">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_new_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="新标签名称"
+                    app:boxBackgroundMode="outline"
+                    app:boxStrokeColor="@color/outline"
+                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_new_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:imeOptions="actionDone"
+                        android:textColor="@color/text_primary" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加"
+                    android:textSize="14sp"
+                    android:layout_marginStart="@dimen/spacing_normal"
+                    app:cornerRadius="@dimen/corner_small"
+                    app:strokeColor="@color/primary"
+                    android:textColor="@color/primary"
+                    style="@style/Widget.Material3.Button.OutlinedButton" />
+            </LinearLayout>
+
+            <!-- Save button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_extra_loose"
+                android:padding="@dimen/spacing_normal"
+                android:text="保存修改"
+                android:textSize="16sp"
+                app:cornerRadius="@dimen/corner_small"
+                app:backgroundTint="@color/primary"
+                app:layout_constraintTop_toBottomOf="@id/layout_add_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -125,24 +125,27 @@ class RecordAdapter : ListAdapter<RecordWithLabels, RecordAdapter.RecordViewHold
                         text = label.name
                         isClickable = false
 
-                        val bgColor = if (label.color != null) {
-                            this@RecordAdapter.getColorFromString(label.color)
-                        } else {
-                            Color.parseColor("#03A9F4")
-                        }
-                        chipBackgroundColor = ColorStateList.valueOf(bgColor)
-                        setTextColor(this@RecordAdapter.getTextColorForBackground(bgColor))
+                        // Use outline style for modern look
+                        chipStrokeColor = ColorStateList.valueOf(Color.parseColor("#E0E0E0"))
+                        chipStrokeWidth = itemView.context.resources.displayMetrics.density * 1f
+                        chipBackgroundColor = ColorStateList.valueOf(Color.TRANSPARENT)
+                        setTextColor(Color.parseColor("#49454F"))
+
+                        // Add animation
+                        animate().setDuration(200)
                     }
                     chipGroupLabels.addView(chip)
                 }
             }
 
-            // Handle selection mode
+            // Handle selection mode with animation
             if (selectionMode) {
                 ivSelectionDot.visibility = View.VISIBLE
                 ivSelectionDot.setImageResource(if (isSelected) R.drawable.ic_selected else R.drawable.ic_unselected)
+                itemView.alpha = if (isSelected) 0.7f else 1f
             } else {
                 ivSelectionDot.visibility = View.GONE
+                itemView.alpha = 1f
             }
 
             // Handle click

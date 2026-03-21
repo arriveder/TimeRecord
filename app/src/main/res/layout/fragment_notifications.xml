@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".ui.notifications.NotificationsFragment">
 
     <ScrollView
@@ -18,39 +19,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/spacing_loose">
 
             <!-- Title -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="统计数据"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:layout_marginBottom="16dp" />
+                android:textSize="22sp"
+                android:textStyle="normal"
+                android:textFontWeight="500"
+                android:textColor="@color/text_primary"
+                android:layout_marginBottom="@dimen/spacing_normal"
+                tools:targetApi="p" />
 
             <!-- Summary Cards -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_normal">
 
                 <!-- Total Records -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_marginEnd="@dimen/spacing_tight"
+                    app:cardCornerRadius="@dimen/corner_medium"
+                    app:cardElevation="@dimen/card_elevation_minimal"
+                    app:cardBackgroundColor="@color/surface_variant"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:gravity="center">
 
                         <TextView
@@ -58,17 +63,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorPrimary" />
+                            android:textSize="28sp"
+                            android:textStyle="normal"
+                            android:textFontWeight="500"
+                            android:textColor="@color/primary"
+                            tools:targetApi="p" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="@dimen/spacing_tight"
                             android:text="总记录"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -79,15 +86,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_marginStart="@dimen/spacing_tight"
+                    app:cardCornerRadius="@dimen/corner_medium"
+                    app:cardElevation="@dimen/card_elevation_minimal"
+                    app:cardBackgroundColor="@color/surface_variant"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:gravity="center">
 
                         <TextView
@@ -95,17 +104,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="32sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorPrimary" />
+                            android:textSize="28sp"
+                            android:textStyle="normal"
+                            android:textFontWeight="500"
+                            android:textColor="@color/primary"
+                            tools:targetApi="p" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="@dimen/spacing_tight"
                             android:text="今日"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -118,22 +129,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="@dimen/spacing_normal">
 
                 <!-- Week Records -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_marginEnd="@dimen/spacing_tight"
+                    app:cardCornerRadius="@dimen/corner_medium"
+                    app:cardElevation="@dimen/card_elevation_minimal"
+                    app:cardBackgroundColor="@color/surface_variant"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:gravity="center">
 
                         <TextView
@@ -141,17 +154,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorPrimary" />
+                            android:textSize="24sp"
+                            android:textStyle="normal"
+                            android:textFontWeight="500"
+                            android:textColor="@color/primary"
+                            tools:targetApi="p" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="@dimen/spacing_tight"
                             android:text="本周"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -162,15 +177,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_marginStart="@dimen/spacing_tight"
+                    app:cardCornerRadius="@dimen/corner_medium"
+                    app:cardElevation="@dimen/card_elevation_minimal"
+                    app:cardBackgroundColor="@color/surface_variant"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:gravity="center">
 
                         <TextView
@@ -178,17 +195,19 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            android:textColor="?attr/colorPrimary" />
+                            android:textSize="24sp"
+                            android:textStyle="normal"
+                            android:textFontWeight="500"
+                            android:textColor="@color/primary"
+                            tools:targetApi="p" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="@dimen/spacing_tight"
                             android:text="本月"
-                            android:textSize="14sp"
-                            android:textColor="@android:color/darker_gray" />
+                            android:textSize="13sp"
+                            android:textColor="@color/text_secondary" />
 
                     </LinearLayout>
 
@@ -196,28 +215,32 @@
 
             </LinearLayout>
 
-            <!-- Label Statistics -->
+            <!-- Label Statistics - Flat card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                android:layout_marginBottom="@dimen/spacing_normal"
+                app:cardCornerRadius="@dimen/corner_medium"
+                app:cardElevation="@dimen/card_elevation_minimal"
+                app:cardBackgroundColor="@color/surface_variant"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_loose">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="标签统计"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginBottom="12dp" />
+                        android:textSize="15sp"
+                        android:textStyle="normal"
+                        android:textFontWeight="500"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="@dimen/spacing_normal"
+                        tools:targetApi="p" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_label_stats"
@@ -231,36 +254,40 @@
                         android:layout_height="wrap_content"
                         android:text="暂无标签统计"
                         android:textSize="14sp"
-                        android:textColor="@android:color/darker_gray"
+                        android:textColor="@color/text_secondary"
                         android:gravity="center"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:visibility="gone" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Date Statistics -->
+            <!-- Date Statistics - Flat card -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="@dimen/corner_medium"
+                app:cardElevation="@dimen/card_elevation_minimal"
+                app:cardBackgroundColor="@color/surface_variant"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_loose">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="日期统计"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="@android:color/black"
-                        android:layout_marginBottom="12dp" />
+                        android:textSize="15sp"
+                        android:textStyle="normal"
+                        android:textFontWeight="500"
+                        android:textColor="@color/text_primary"
+                        android:layout_marginBottom="@dimen/spacing_normal"
+                        tools:targetApi="p" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view_date_stats"
@@ -274,9 +301,9 @@
                         android:layout_height="wrap_content"
                         android:text="暂无记录"
                         android:textSize="14sp"
-                        android:textColor="@android:color/darker_gray"
+                        android:textColor="@color/text_secondary"
                         android:gravity="center"
-                        android:padding="16dp"
+                        android:padding="@dimen/spacing_loose"
                         android:visibility="gone" />
 
                 </LinearLayout>

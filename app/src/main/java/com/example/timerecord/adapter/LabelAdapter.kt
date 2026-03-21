@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -44,8 +45,8 @@ class LabelAdapter : ListAdapter<LabelWithUsage, LabelAdapter.LabelViewHolder>(L
         private val viewColorIndicator: View = itemView.findViewById(R.id.view_color_indicator)
         private val tvLabelName: TextView = itemView.findViewById(R.id.tv_label_name)
         private val tvUsageCount: TextView = itemView.findViewById(R.id.tv_usage_count)
-        private val btnEdit: com.google.android.material.button.MaterialButton = itemView.findViewById(R.id.btn_edit)
-        private val btnDelete: com.google.android.material.button.MaterialButton = itemView.findViewById(R.id.btn_delete)
+        private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
+        private val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
 
         fun bind(item: LabelWithUsage) {
             val label = item.label
@@ -61,12 +62,12 @@ class LabelAdapter : ListAdapter<LabelWithUsage, LabelAdapter.LabelViewHolder>(L
             }
             viewColorIndicator.setBackgroundColor(bgColor)
 
-            // Edit button
+            // Edit button click
             btnEdit.setOnClickListener {
                 onEditClickListener?.invoke(label)
             }
 
-            // Delete button
+            // Delete button click
             btnDelete.setOnClickListener {
                 onDeleteClickListener?.invoke(label)
             }

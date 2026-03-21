@@ -26,6 +26,12 @@ class RecordRepository(
 
     suspend fun updateRecord(record: Record) = recordDao.updateRecord(record)
 
+    suspend fun searchRecordsByNote(userId: String, query: String) =
+        recordDao.searchRecordsByNote(userId, query)
+
+    suspend fun searchRecordsByLabel(userId: String, query: String) =
+        recordDao.searchRecordsByLabel(userId, query)
+
     suspend fun createRecord(
         userId: String,
         note: String? = null
