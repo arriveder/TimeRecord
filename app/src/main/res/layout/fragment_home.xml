@@ -42,6 +42,21 @@
         android:src="@drawable/ic_tag"
         app:tint="@color/text_secondary"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_search"
+        tools:targetApi="m" />
+
+    <!-- Search button -->
+    <ImageButton
+        android:id="@+id/btn_search"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="搜索"
+        android:padding="12dp"
+        android:src="@drawable/ic_search"
+        app:tint="@color/text_secondary"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_select_mode"
         tools:targetApi="m" />
 

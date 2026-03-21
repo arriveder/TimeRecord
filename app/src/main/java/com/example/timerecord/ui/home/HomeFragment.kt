@@ -14,6 +14,7 @@ import com.example.timerecord.LabelManagementActivity
 import com.example.timerecord.RecordDetailActivity
 import com.example.timerecord.R
 import com.example.timerecord.RecordViewModel
+import com.example.timerecord.SearchActivity
 import com.example.timerecord.adapter.RecordAdapter
 import com.example.timerecord.databinding.FragmentHomeBinding
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -89,6 +90,11 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.btnSearch.setOnClickListener {
+            val intent = Intent(requireContext(), SearchActivity::class.java)
+            startActivity(intent)
+        }
+
         loadRecords(null)
     }
 
@@ -130,6 +136,7 @@ class HomeFragment : Fragment() {
                 if (recordsWithLabels.isEmpty()) {
                     binding.recyclerViewRecords.visibility = View.GONE
                     binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = "暂无记录\n点击下方 + 按钮创建记录"
                 } else {
                     binding.recyclerViewRecords.visibility = View.VISIBLE
                     binding.tvEmpty.visibility = View.GONE

@@ -45,4 +45,22 @@ interface RecordDao {
 
     @Query("DELETE FROM records WHERE id = :id")
     suspend fun deleteRecordById(id: String)
+
+    // 搜索记录（按笔记内容）
+    @Query("""
+        SELECT * FROM records
+        WHERE user_id = :userId AND note LIKE '%' || :query || '%'
+        ORDER BY timestamp DESC
+    """)
+    suspend fun searchRecordsByNote(userId: String, query: String): List<Record>
+
+    // 通过标签搜索记录
+    @Query("""
+        SELECT DISTINCT r.* FROM records r
+        INNER JOIN record_label_rel rel ON r.id = rel.record_id
+        INNER JOIN labels l ON rel.label_id = l.id
+        WHERE r.user_id = :userId AND l.name LIKE '%' || :query || '%'
+        ORDER BY r.timestamp DESC
+    """)
+    suspend fun searchRecordsByLabel(userId: String, query: String): List<Record>
 }
