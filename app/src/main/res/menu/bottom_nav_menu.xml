@@ -7,9 +7,9 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_placeholder"
-        android:title=""
-        android:enabled="false" />
+        android:id="@+id/navigation_add_record"
+        android:icon="@drawable/ic_add"
+        android:title="@string/title_add_record" />
 
     <item
         android:id="@+id/navigation_notifications"

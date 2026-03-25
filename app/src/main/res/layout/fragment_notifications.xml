@@ -21,17 +21,35 @@
             android:orientation="vertical"
             android:padding="@dimen/spacing_loose">
 
-            <!-- Title -->
-            <TextView
+            <!-- Title with settings icon -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="统计数据"
-                android:textSize="22sp"
-                android:textStyle="normal"
-                android:textFontWeight="500"
-                android:textColor="@color/text_primary"
-                android:layout_marginBottom="@dimen/spacing_normal"
-                tools:targetApi="p" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="@dimen/spacing_normal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="统计数据"
+                    android:textSize="22sp"
+                    android:textStyle="normal"
+                    android:textFontWeight="500"
+                    android:textColor="@color/text_primary"
+                    tools:targetApi="p" />
+
+                <ImageView
+                    android:id="@+id/btn_settings"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_settings"
+                    android:contentDescription="@string/title_settings"
+                    app:tint="@color/text_secondary" />
+
+            </LinearLayout>
 
             <!-- Summary Cards -->
             <LinearLayout

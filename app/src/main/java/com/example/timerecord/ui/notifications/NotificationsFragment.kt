@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.timerecord.R
 import com.example.timerecord.RecordViewModel
 import com.example.timerecord.adapter.DateStat
 import com.example.timerecord.adapter.DateStatAdapter
 import com.example.timerecord.adapter.LabelStat
 import com.example.timerecord.adapter.LabelStatAdapter
 import com.example.timerecord.databinding.FragmentNotificationsBinding
+import com.example.timerecord.util.ThemeManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -40,8 +44,15 @@ class NotificationsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[RecordViewModel::class.java]
 
+        setupSettingsButton()
         setupRecyclerViews()
         loadStatistics()
+    }
+
+    private fun setupSettingsButton() {
+        binding.btnSettings.setOnClickListener {
+            showThemeSelectionDialog()
+        }
     }
 
     private fun setupRecyclerViews() {
@@ -140,6 +151,38 @@ class NotificationsFragment : Fragment() {
                 // Handle error
             }
         }
+    }
+
+    private fun showThemeSelectionDialog() {
+        val currentMode = ThemeManager.getSavedThemeMode()
+        val items = arrayOf(
+            getString(R.string.theme_mode_system),
+            getString(R.string.theme_mode_light),
+            getString(R.string.theme_mode_dark)
+        )
+        val checkedItem = when (currentMode) {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> 0
+            AppCompatDelegate.MODE_NIGHT_NO -> 1
+            AppCompatDelegate.MODE_NIGHT_YES -> 2
+            else -> 0
+        }
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.select_theme)
+            .setSingleChoiceItems(items, checkedItem) { dialog, which ->
+                val newMode = when (which) {
+                    0 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    1 -> AppCompatDelegate.MODE_NIGHT_NO
+                    2 -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                }
+                ThemeManager.setThemeMode(newMode)
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     override fun onResume() {

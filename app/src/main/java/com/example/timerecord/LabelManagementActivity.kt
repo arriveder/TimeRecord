@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
-class LabelManagementActivity : AppCompatActivity() {
+class LabelManagementActivity : BaseActivity() {
 
     private val viewModel: RecordViewModel by viewModels()
     private lateinit var binding: ActivityLabelManagementBinding
