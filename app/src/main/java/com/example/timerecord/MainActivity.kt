@@ -2,18 +2,22 @@ package com.example.timerecord
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.timerecord.databinding.ActivityMainBinding
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.timerecord.util.ThemeManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Apply theme before setContentView
+        ThemeManager.init(applicationContext)
+        ThemeManager.applyTheme()
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -25,17 +29,33 @@ class MainActivity : AppCompatActivity() {
 
         navView.setupWithNavController(navController)
 
-        val fab: FloatingActionButton = binding.fabAdd // 使用 View Binding 访问 FAB
-
-        fab.setOnClickListener {
-            // 创建 Intent 跳转到新的 Activity
-            val intent = Intent(this, CreateRecordActivity::class.java)
-            startActivity(intent)
+        // Handle navigation item clicks
+        navView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    navController.navigate(R.id.navigation_home)
+                    true
+                }
+                R.id.navigation_notifications -> {
+                    navController.navigate(R.id.navigation_notifications)
+                    true
+                }
+                R.id.navigation_add_record -> {
+                    val intent = Intent(this, CreateRecordActivity::class.java)
+                    startActivity(intent)
+                    // Reset to previous selection to avoid highlighting add record
+                    navView.menu.findItem(getPreviousNavItem())?.isChecked = true
+                    false
+                }
+                else -> false
+            }
         }
+    }
 
-        val placeholderItem = navView.menu.findItem(R.id.navigation_placeholder)
-        if (placeholderItem != null) {
-            placeholderItem.isEnabled = false
+    private fun getPreviousNavItem(): Int {
+        return when (findNavController(R.id.nav_host_fragment_activity_main).currentDestination?.id) {
+            R.id.navigation_add_record, R.id.navigation_notifications -> R.id.navigation_notifications
+            else -> R.id.navigation_home
         }
     }
 }

@@ -17,7 +17,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class SearchResultActivity : AppCompatActivity() {
+class SearchResultActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySearchResultBinding
     private lateinit var recordAdapter: RecordAdapter

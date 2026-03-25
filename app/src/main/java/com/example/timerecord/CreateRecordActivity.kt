@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class CreateRecordActivity : AppCompatActivity() {
+class CreateRecordActivity : BaseActivity() {
 
     private val viewModel: RecordViewModel by viewModels()
     private val selectedLabelIds = mutableSetOf<String>()

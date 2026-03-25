@@ -15,7 +15,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class RecordDetailActivity : AppCompatActivity() {
+class RecordDetailActivity : BaseActivity() {
 
     private lateinit var recordId: String
     private var isDirty = false
