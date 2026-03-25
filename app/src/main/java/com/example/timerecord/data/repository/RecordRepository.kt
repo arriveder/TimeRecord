@@ -1,5 +1,6 @@
 package com.example.timerecord.data.repository
 
+import com.example.timerecord.RecordSortOption
 import com.example.timerecord.dao.RecordDao
 import com.example.timerecord.entity.Record
 import java.time.Instant
@@ -14,8 +15,21 @@ class RecordRepository(
 
     suspend fun getRecordById(id: String) = recordDao.getRecordById(id)
 
-    suspend fun getRecordsByUser(userId: String) =
-        recordDao.getRecordsByUser(userId)
+    suspend fun getRecordsByUser(userId: String, sortOption: RecordSortOption = RecordSortOption.TIME_DESC): List<Record> {
+        val records = when (sortOption) {
+            RecordSortOption.TIME_DESC -> recordDao.getRecordsByUser(userId)
+            RecordSortOption.TIME_ASC -> recordDao.getRecordsByUserAsc(userId)
+            RecordSortOption.NOTE_ASC, RecordSortOption.NOTE_DESC -> {
+                // 按备注排序在内存中进行
+                recordDao.getRecordsByUser(userId)
+            }
+        }
+        return when (sortOption) {
+            RecordSortOption.NOTE_ASC -> records.sortedBy { it.note?.lowercase() ?: "" }
+            RecordSortOption.NOTE_DESC -> records.sortedByDescending { it.note?.lowercase() ?: "" }
+            else -> records
+        }
+    }
 
     suspend fun getRecordsByDate(userId: String, date: String) =
         recordDao.getRecordsByDate(userId, date)

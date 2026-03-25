@@ -123,6 +123,14 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     private val _userRecords = MutableLiveData<List<Record>>()
     val userRecords: LiveData<List<Record>> = _userRecords
 
+    private var currentSortOption = RecordSortOption.TIME_DESC
+
+    fun setSortOption(sortOption: RecordSortOption) {
+        currentSortOption = sortOption
+    }
+
+    fun getSortOption(): RecordSortOption = currentSortOption
+
     fun loadRecords(userId: String = DEFAULT_USER_ID) {
         viewModelScope.launch {
             try {
@@ -162,13 +170,14 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
 
     suspend fun getRecordsWithLabelsByDate(
         userId: String = DEFAULT_USER_ID,
-        date: String?
+        date: String?,
+        sortOption: RecordSortOption = currentSortOption
     ): List<RecordWithLabels> {
         return try {
             val records = if (date == null) {
-                recordRepository.getRecordsByUser(userId)
+                recordRepository.getRecordsByUser(userId, sortOption)
             } else {
-                recordRepository.getRecordsByUser(userId).filter { it.date == date }
+                recordRepository.getRecordsByUser(userId, sortOption).filter { it.date == date }
             }
             records.map { record ->
                 val labelRels = recordLabelRelRepository.getRecordLabelRelsByRecordId(record.id)

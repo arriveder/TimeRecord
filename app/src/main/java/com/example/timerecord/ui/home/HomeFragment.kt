@@ -1,5 +1,6 @@
 package com.example.timerecord.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.timerecord.LabelManagementActivity
 import com.example.timerecord.RecordDetailActivity
-import com.example.timerecord.R
+import com.example.timerecord.RecordSortOption
 import com.example.timerecord.RecordViewModel
+import com.example.timerecord.R
 import com.example.timerecord.SearchActivity
 import com.example.timerecord.adapter.RecordAdapter
 import com.example.timerecord.databinding.FragmentHomeBinding
@@ -34,6 +36,14 @@ class HomeFragment : Fragment() {
     private var selectedDate: String? = null
     private var selectionMode: Boolean = false
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
+    private val sortOptions = RecordSortOption.entries.toTypedArray()
+    private var currentSortIndex = 0
+
+    companion object {
+        private const val PREFS_NAME = "home_prefs"
+        private const val KEY_SORT_OPTION = "sort_option"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,6 +95,10 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.btnSort.setOnClickListener {
+            showSortOptionDialog()
+        }
+
         binding.btnLabelManagement.setOnClickListener {
             val intent = Intent(requireContext(), LabelManagementActivity::class.java)
             startActivity(intent)
@@ -95,7 +109,37 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        // 加载保存的排序选项
+        loadSavedSortOption()
         loadRecords(null)
+    }
+
+    private fun loadSavedSortOption() {
+        val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        currentSortIndex = prefs.getInt(KEY_SORT_OPTION, 0)
+        recordViewModel.setSortOption(sortOptions[currentSortIndex])
+    }
+
+    private fun saveSortOption(index: Int) {
+        val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putInt(KEY_SORT_OPTION, index).apply()
+    }
+
+    private fun showSortOptionDialog() {
+        val sortTitles = sortOptions.map { it.title }.toTypedArray()
+        AlertDialog.Builder(requireContext())
+            .setTitle("选择排序方式")
+            .setSingleChoiceItems(sortTitles, currentSortIndex) { dialog, which ->
+                if (which != currentSortIndex) {
+                    currentSortIndex = which
+                    val sortOption = sortOptions[which]
+                    recordViewModel.setSortOption(sortOption)
+                    saveSortOption(which)
+                    loadRecords(selectedDate)
+                }
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun showDatePicker() {
@@ -130,7 +174,8 @@ class HomeFragment : Fragment() {
             try {
                 val recordsWithLabels = recordViewModel.getRecordsWithLabelsByDate(
                     RecordViewModel.DEFAULT_USER_ID,
-                    selectedDate
+                    selectedDate,
+                    sortOptions[currentSortIndex]
                 )
 
                 if (recordsWithLabels.isEmpty()) {
@@ -230,7 +275,8 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        setupDateFilter()
+        loadSavedSortOption()
+        loadRecords(selectedDate)
     }
 
     override fun onDestroyView() {
