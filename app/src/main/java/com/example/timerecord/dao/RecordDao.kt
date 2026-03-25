@@ -23,11 +23,19 @@ interface RecordDao {
 
     // 按用户查询所有记录，按时间降序
     @Query("""
-        SELECT * FROM records 
-        WHERE user_id = :userId 
+        SELECT * FROM records
+        WHERE user_id = :userId
         ORDER BY timestamp DESC
     """)
     suspend fun getRecordsByUser(userId: String): List<Record>
+
+    // 按用户查询所有记录，按时间升序
+    @Query("""
+        SELECT * FROM records
+        WHERE user_id = :userId
+        ORDER BY timestamp ASC
+    """)
+    suspend fun getRecordsByUserAsc(userId: String): List<Record>
 
     // 按日期查询记录（YYYY-MM-DD）
     @Query("""
