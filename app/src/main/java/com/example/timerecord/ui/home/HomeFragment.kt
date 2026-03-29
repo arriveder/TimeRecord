@@ -63,6 +63,39 @@ class HomeFragment : Fragment() {
         setupDateFilter()
         setupSelectionMode()
         setupBottomActions()
+
+        // Observe sync state
+        recordViewModel.isSyncing.observe(viewLifecycleOwner) { isSyncing ->
+            if (_binding != null) {
+                binding.swipeRefresh.isRefreshing = isSyncing
+            }
+        }
+
+        recordViewModel.syncResult.observe(viewLifecycleOwner) { result ->
+            if (_binding == null) return@observe
+
+            if (result.isFailure) {
+                // Show error message
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "同步失败：${result.exceptionOrNull()?.message}",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "同步完成",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+            binding.swipeRefresh.isRefreshing = false
+
+            // 同步完成后重新加载数据
+            loadRecords(selectedDate)
+        }
+
+        // Load labels
+        recordViewModel.loadLabels()
     }
 
     private fun setupRecyclerView() {
@@ -84,6 +117,16 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = recordAdapter
         }
+
+        // Setup swipe refresh
+        binding.swipeRefresh.setOnRefreshListener {
+            recordViewModel.manualSync()
+        }
+        binding.swipeRefresh.setColorSchemeResources(
+            R.color.primary,
+            R.color.primary_variant,
+            R.color.secondary
+        )
     }
 
     private fun setupDateFilter() {
@@ -172,8 +215,15 @@ class HomeFragment : Fragment() {
     private fun loadRecords(selectedDate: String?) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
+                // 检查用户是否已登录
+                if (!recordViewModel.isLoggedIn()) {
+                    binding.recyclerViewRecords.visibility = View.GONE
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = "请先登录\n点击下方 + 按钮去登录"
+                    return@launch
+                }
+
                 val recordsWithLabels = recordViewModel.getRecordsWithLabelsByDate(
-                    RecordViewModel.DEFAULT_USER_ID,
                     selectedDate,
                     sortOptions[currentSortIndex]
                 )
@@ -190,6 +240,7 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 binding.recyclerViewRecords.visibility = View.GONE
                 binding.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.text = "加载失败：${e.message}"
             }
         }
     }
@@ -256,16 +307,16 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 recordIds.forEach { recordId ->
-                    recordViewModel.deleteRecordById(recordId)
+                    recordViewModel.deleteRecordWithSync(recordId)
                 }
 
-                // Exit selection mode
+                // 等待同步完成后退出选择模式
                 selectionMode = false
                 recordAdapter.setSelectionMode(false)
                 binding.layoutBottomActions.visibility = View.GONE
                 binding.btnSelectMode.setImageResource(R.drawable.ic_more)
 
-                // Reload records
+                // 重新加载记录
                 loadRecords(selectedDate)
             } catch (e: Exception) {
                 // Handle error

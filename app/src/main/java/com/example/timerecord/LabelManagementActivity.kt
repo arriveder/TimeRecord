@@ -113,7 +113,7 @@ class LabelManagementActivity : BaseActivity() {
                     return@setPositiveButton
                 }
 
-                viewModel.updateLabel(label.id, newName)
+                viewModel.updateLabelWithSync(label.id, newName)
             }
             .setNegativeButton("取消", null)
             .show()
@@ -146,7 +146,7 @@ class LabelManagementActivity : BaseActivity() {
                 .setTitle("删除确认")
                 .setMessage(message)
                 .setPositiveButton("删除") { _, _ ->
-                    viewModel.deleteLabel(label.id)
+                    viewModel.deleteLabelWithSync(label.id)
                 }
                 .setNegativeButton("取消", null)
                 .show()

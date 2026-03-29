@@ -1,11 +1,14 @@
 package com.example.timerecord
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.timerecord.auth.AuthManager
 import com.example.timerecord.entity.Label
 import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
@@ -24,6 +27,7 @@ class CreateRecordActivity : BaseActivity() {
     private val selectedLabelIds = mutableSetOf<String>()
     private val availableLabels = mutableListOf<Label>()
     private var updateTimeJob: Job? = null
+    private lateinit var authManager: AuthManager
 
     private lateinit var toolbar: com.google.android.material.appbar.MaterialToolbar
     private lateinit var tvCurrentTime: androidx.appcompat.widget.AppCompatTextView
@@ -39,6 +43,17 @@ class CreateRecordActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        authManager = AuthManager.getInstance(this)
+
+        // 检查用户是否已登录
+        if (!authManager.isLoggedIn()) {
+            Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+            return
+        }
+
         setContentView(R.layout.activity_create_record)
 
         bindViews()
@@ -224,8 +239,7 @@ class CreateRecordActivity : BaseActivity() {
             return
         }
 
-        viewModel.createLabel(
-            userId = RecordViewModel.DEFAULT_USER_ID,
+        viewModel.createLabelWithSync(
             name = labelName,
             color = getRandomColor()
         )
@@ -234,8 +248,7 @@ class CreateRecordActivity : BaseActivity() {
     private fun saveRecord() {
         val note = etNote.text?.toString()?.trim()?.ifEmpty { null }
 
-        viewModel.createRecord(
-            userId = RecordViewModel.DEFAULT_USER_ID,
+        viewModel.createRecordWithSync(
             note = note,
             labelIds = selectedLabelIds.toList()
         )

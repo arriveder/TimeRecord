@@ -34,6 +34,7 @@
     <color name="text_primary">#1C1B1F</color>
     <color name="text_secondary">#49454F</color>
     <color name="text_disabled">#79747E</color>
+    <color name="text_error">#B3261E</color>
 
     <!-- Selection colors -->
     <color name="selection_indicator">#1A73E8</color>

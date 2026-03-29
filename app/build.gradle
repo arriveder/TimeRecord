@@ -17,6 +17,17 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        // 读取 api_config.properties 中的 API_BASE_URL
+        def apiConfigFile = rootProject.file("api_config.properties")
+        if (apiConfigFile.exists()) {
+            def properties = new Properties()
+            apiConfigFile.withInputStream { properties.load(it) }
+            buildConfigField "String", "API_BASE_URL", "\"${properties.getProperty('API_BASE_URL')}\""
+        } else {
+            // 默认值
+            buildConfigField "String", "API_BASE_URL", '"https://localhost:8080/"'
+        }
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -42,6 +53,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -78,4 +90,25 @@ dependencies {
 
     // Gson for JSON handling
     implementation 'com.google.code.gson:gson:2.10.1'
+
+    // SwipeRefreshLayout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    // WorkManager for background sync
+    def work_version = "2.9.0"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
+
+    // Retrofit for HTTP client
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    implementation "com.squareup.okhttp3:okhttp:4.12.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.12.0"
+
+    // DataStore for preferences
+    def datastore_version = "1.0.0"
+    implementation "androidx.datastore:datastore-preferences:$datastore_version"
+
+    // Security for encrypted storage
+    implementation "androidx.security:security-crypto:1.1.0-alpha06"
 }
