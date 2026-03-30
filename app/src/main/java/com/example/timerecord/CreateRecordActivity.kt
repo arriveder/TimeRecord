@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -114,6 +115,11 @@ class CreateRecordActivity : BaseActivity() {
                     Snackbar.LENGTH_SHORT
                 ).show()
                 etNewLabel.text?.clear()
+                // 自动选中新创建的标签
+                selectedLabelIds.add(label.id)
+                Log.d("CreateRecord", "新标签已自动选中：${label.name} (${label.id})")
+                // 更新 UI 显示选中状态
+                updateLabelChips()
             }.onFailure { error ->
                 val message = when (error.message) {
                     "Label already exists" -> "标签已存在"

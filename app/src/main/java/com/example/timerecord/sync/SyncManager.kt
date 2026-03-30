@@ -8,6 +8,7 @@ import com.example.timerecord.dao.PendingOperationDao
 import com.example.timerecord.entity.PendingOperationEntity
 import com.example.timerecord.entity.Record
 import com.example.timerecord.entity.Label
+import com.example.timerecord.entity.RecordLabelRel
 import com.example.timerecord.network.dto.*
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -180,6 +181,10 @@ class SyncManager(
      */
     suspend fun recordCreateOperation(record: Record) {
         withContext(Dispatchers.IO) {
+            // 获取记录的标签 ID 列表
+            val labelIds = recordLabelRelDao.getRecordLabelRelsByRecordId(record.id)
+                .map { it.labelId }
+
             val operation = PendingOperationEntity(
                 id = UUID.randomUUID().toString(),
                 entityType = ENTITY_TYPE_RECORD,
@@ -193,13 +198,14 @@ class SyncManager(
                         date = record.date,
                         time24 = record.time24,
                         time12 = record.time12,
-                        amPm = record.amPm
+                        amPm = record.amPm,
+                        labelIds = labelIds.ifEmpty { null }
                     )
                 ),
                 timestamp = System.currentTimeMillis()
             )
             pendingOperationDao.insertOperation(operation)
-            Log.d(TAG, "记录创建操作已记录：${record.id}")
+            Log.d(TAG, "记录创建操作已记录：${record.id}, labelIds=$labelIds")
         }
     }
 
@@ -208,6 +214,10 @@ class SyncManager(
      */
     suspend fun recordUpdateOperation(record: Record, previousVersion: Long) {
         withContext(Dispatchers.IO) {
+            // 获取记录的标签 ID 列表
+            val labelIds = recordLabelRelDao.getRecordLabelRelsByRecordId(record.id)
+                .map { it.labelId }
+
             val operation = PendingOperationEntity(
                 id = UUID.randomUUID().toString(),
                 entityType = ENTITY_TYPE_RECORD,
@@ -222,13 +232,14 @@ class SyncManager(
                         date = record.date,
                         time24 = record.time24,
                         time12 = record.time12,
-                        amPm = record.amPm
+                        amPm = record.amPm,
+                        labelIds = labelIds.ifEmpty { null }
                     )
                 ),
                 timestamp = System.currentTimeMillis()
             )
             pendingOperationDao.insertOperation(operation)
-            Log.d(TAG, "记录更新操作已记录：${record.id}")
+            Log.d(TAG, "记录更新操作已记录：${record.id}, labelIds=$labelIds")
         }
     }
 
@@ -402,7 +413,18 @@ class SyncManager(
                     updatedAt = updatedAt
                 )
                 recordDao.insertRecord(record)
-                Log.d(TAG, "同步创建记录：${record.id}")
+
+                // 同步标签关联关系
+                recordResponse.labels?.forEach { labelResponse ->
+                    val rel = RecordLabelRel(
+                        id = UUID.randomUUID().toString(),
+                        recordId = recordResponse.id,
+                        labelId = labelResponse.id
+                    )
+                    recordLabelRelDao.insertRelation(rel)
+                }
+
+                Log.d(TAG, "同步创建记录：${record.id}, labels=${recordResponse.labels?.size ?: 0}")
             }
         }
 
@@ -422,7 +444,19 @@ class SyncManager(
                     updatedAt = updatedAt
                 )
                 recordDao.updateRecord(updatedRecord)
-                Log.d(TAG, "同步更新记录：${recordResponse.id}")
+
+                // 同步标签关联关系：先删除旧的，再插入新的
+                recordLabelRelDao.deleteRecordLabelRelsByRecordId(recordResponse.id)
+                recordResponse.labels?.forEach { labelResponse ->
+                    val rel = RecordLabelRel(
+                        id = UUID.randomUUID().toString(),
+                        recordId = recordResponse.id,
+                        labelId = labelResponse.id
+                    )
+                    recordLabelRelDao.insertRelation(rel)
+                }
+
+                Log.d(TAG, "同步更新记录：${recordResponse.id}, labels=${recordResponse.labels?.size ?: 0}")
             }
         }
 
@@ -430,6 +464,8 @@ class SyncManager(
         changes.deleted?.forEach { recordId ->
             val existingRecord = recordDao.getRecordById(recordId)
             if (existingRecord != null) {
+                // 删除记录前，先删除标签关联关系（ CASCADE 也会自动删除，但显式删除更清晰）
+                recordLabelRelDao.deleteRecordLabelRelsByRecordId(recordId)
                 recordDao.deleteRecord(existingRecord)
                 Log.d(TAG, "同步删除记录：$recordId")
             }

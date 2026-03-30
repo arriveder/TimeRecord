@@ -8,7 +8,8 @@ data class RecordRequest(
     @SerializedName("date") val date: String,
     @SerializedName("time24") val time24: String,
     @SerializedName("time12") val time12: String,
-    @SerializedName("amPm") val amPm: String
+    @SerializedName("amPm") val amPm: String,
+    @SerializedName("labelIds") val labelIds: List<String>? = null
 )
 
 data class RecordResponse(

@@ -29,6 +29,7 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
     private val labelRepository = LabelRepository(database.labelDao())
     private val recordLabelRelRepository = RecordLabelRelRepository(database.recordLabelRelDao())
     private val userRepository = UserRepository(database.userDao())
+    private val recordLabelRelDao = database.recordLabelRelDao()
     private val authManager = AuthManager.getInstance(application)
     private val syncManager = SyncManager(application, authManager, database)
     private val gson = Gson()
@@ -426,6 +427,10 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
             val apiService = authManager.getApiService()
             val token = "Bearer $accessToken"
 
+            // 获取记录的标签 ID 列表
+            val labelIds = recordLabelRelDao.getRecordLabelRelsByRecordId(record.id)
+                .map { it.labelId }
+
             when (operationType) {
                 "CREATE" -> {
                     val request = RecordRequest(
@@ -434,7 +439,8 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                         date = record.date,
                         time24 = record.time24,
                         time12 = record.time12,
-                        amPm = record.amPm
+                        amPm = record.amPm,
+                        labelIds = labelIds.ifEmpty { null }
                     )
                     Log.d("Sync", "发送创建记录请求：${gson.toJson(request)}")
                     val response = apiService.createRecord(token, request)
@@ -454,7 +460,8 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                         date = record.date,
                         time24 = record.time24,
                         time12 = record.time12,
-                        amPm = record.amPm
+                        amPm = record.amPm,
+                        labelIds = labelIds.ifEmpty { null }
                     )
                     Log.d("Sync", "发送更新记录请求：${gson.toJson(request)}")
                     val response = apiService.updateRecord(token, record.id, request)
@@ -540,6 +547,18 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                         // 服务器数据更新，更新本地
                         recordRepository.updateRecord(record)
                         Log.d("Sync", "更新本地记录：${serverRecord.id}")
+                    }
+
+                    // 同步标签关联关系：先删除旧的，再插入新的
+                    recordLabelRelRepository.deleteRecordLabelRelsByRecordId(serverRecord.id)
+                    serverRecord.labels?.forEach { labelResponse ->
+                        val rel = RecordLabelRel(
+                            id = UUID.randomUUID().toString(),
+                            recordId = serverRecord.id,
+                            labelId = labelResponse.id
+                        )
+                        recordLabelRelRepository.insertRecordLabelRel(rel)
+                        Log.d("Sync", "同步标签关联：recordId=${serverRecord.id}, labelId=${labelResponse.id}")
                     }
                 }
 
@@ -699,6 +718,8 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                 val userId = getCurrentUserId()
                 val recordId = recordRepository.createRecord(userId, note)
 
+                Log.d("Sync", "创建记录：recordId=$recordId, note=$note, labelIds=$labelIds")
+
                 labelIds.forEach { labelId ->
                     val rel = RecordLabelRel(
                         id = UUID.randomUUID().toString(),
@@ -706,16 +727,27 @@ class RecordViewModel(application: Application) : AndroidViewModel(application) 
                         labelId = labelId
                     )
                     recordLabelRelRepository.insertRecordLabelRel(rel)
+                    Log.d("Sync", "保存标签关联：recordId=$recordId, labelId=$labelId")
                 }
 
                 // 如果已登录服务器，立即同步到服务器
                 if (authManager.isLoggedIn()) {
                     val record = recordRepository.getRecordById(recordId)
-                    record?.let { syncRecordToServer(it, "CREATE") }
+                    Log.d("Sync", "准备同步记录到服务器：recordId=$recordId, isLoggedIn=true")
+                    record?.let {
+                        // 验证标签关联是否已保存
+                        val savedLabelIds = recordLabelRelDao.getRecordLabelRelsByRecordId(recordId)
+                            .map { it.labelId }
+                        Log.d("Sync", "数据库中记录的标签 ID: $savedLabelIds")
+                        syncRecordToServer(it, "CREATE")
+                    }
+                } else {
+                    Log.w("Sync", "用户未登录，跳过同步")
                 }
 
                 _saveResult.postValue(Result.success(recordId))
             } catch (e: Exception) {
+                Log.e("Sync", "创建记录失败", e)
                 _saveResult.postValue(Result.failure(e))
             }
         }
