@@ -245,8 +245,7 @@ class EditRecordActivity : BaseActivity() {
             return
         }
 
-        viewModel.createLabel(
-            userId = RecordViewModel.DEFAULT_USER_ID,
+        viewModel.createLabelWithSync(
             name = labelName,
             color = getRandomColor()
         )
@@ -255,7 +254,7 @@ class EditRecordActivity : BaseActivity() {
     private fun saveRecord() {
         val note = etNote.text?.toString()?.trim()?.ifEmpty { null }
 
-        viewModel.updateRecord(
+        viewModel.updateRecordWithSync(
             recordId = recordId,
             note = note,
             labelIds = selectedLabelIds.toList()

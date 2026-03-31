@@ -8,6 +8,8 @@ class UserRepository(
 ) {
     suspend fun insertUser(user: User) = userDao.insertUser(user)
 
+    suspend fun updateUser(user: User) = userDao.updateUser(user)
+
     suspend fun getUserById(id: String) = userDao.getUserById(id)
 
     suspend fun getUserByName(username: String) = userDao.getUserByName(username)

@@ -114,7 +114,7 @@ class SearchResultActivity : BaseActivity() {
         lifecycleScope.launch {
             try {
                 val viewModel = RecordViewModel(application)
-                val recordsWithLabels = viewModel.searchRecords(query, RecordViewModel.DEFAULT_USER_ID)
+                val recordsWithLabels = viewModel.searchRecords(query)
 
                 binding.tvResultCount.text = "找到 ${recordsWithLabels.size} 条记录"
 
