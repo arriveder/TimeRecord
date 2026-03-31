@@ -2,5 +2,21 @@
     <string name="app_name">Time Record</string>
     <string name="title_home">时间纪录</string>
     <string name="title_notifications">数据统计</string>
+    <string name="title_settings">设置</string>
     <string name="create_record_activity_title">新纪录</string>
+
+    <!-- Theme settings -->
+    <string name="theme_mode">主题模式</string>
+    <string name="theme_mode_system">跟随系统</string>
+    <string name="theme_mode_light">浅色模式</string>
+    <string name="theme_mode_dark">深色模式</string>
+    <string name="select_theme">选择主题</string>
+    <string name="cancel">取消</string>
+    <string name="title_add_record">添加记录</string>
+    <string name="title_settings_activity">设置</string>
+    <string name="setting_theme">主题模式</string>
+    <string name="setting_logout">退出登录</string>
+    <string name="logout_confirm_title">退出登录</string>
+    <string name="logout_confirm_message">确定要退出登录吗？</string>
+    <string name="confirm">确认</string>
 </resources>

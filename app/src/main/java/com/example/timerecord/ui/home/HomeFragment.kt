@@ -1,5 +1,6 @@
 package com.example.timerecord.ui.home
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,8 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.timerecord.LabelManagementActivity
 import com.example.timerecord.RecordDetailActivity
-import com.example.timerecord.R
+import com.example.timerecord.RecordSortOption
 import com.example.timerecord.RecordViewModel
+import com.example.timerecord.R
 import com.example.timerecord.SearchActivity
 import com.example.timerecord.adapter.RecordAdapter
 import com.example.timerecord.databinding.FragmentHomeBinding
@@ -35,6 +37,14 @@ class HomeFragment : Fragment() {
     private var selectionMode: Boolean = false
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
+    private val sortOptions = RecordSortOption.entries.toTypedArray()
+    private var currentSortIndex = 0
+
+    companion object {
+        private const val PREFS_NAME = "home_prefs"
+        private const val KEY_SORT_OPTION = "sort_option"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +63,39 @@ class HomeFragment : Fragment() {
         setupDateFilter()
         setupSelectionMode()
         setupBottomActions()
+
+        // Observe sync state
+        recordViewModel.isSyncing.observe(viewLifecycleOwner) { isSyncing ->
+            if (_binding != null) {
+                binding.swipeRefresh.isRefreshing = isSyncing
+            }
+        }
+
+        recordViewModel.syncResult.observe(viewLifecycleOwner) { result ->
+            if (_binding == null) return@observe
+
+            if (result.isFailure) {
+                // Show error message
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "同步失败：${result.exceptionOrNull()?.message}",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                android.widget.Toast.makeText(
+                    requireContext(),
+                    "同步完成",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+            binding.swipeRefresh.isRefreshing = false
+
+            // 同步完成后重新加载数据
+            loadRecords(selectedDate)
+        }
+
+        // Load labels
+        recordViewModel.loadLabels()
     }
 
     private fun setupRecyclerView() {
@@ -74,6 +117,16 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = recordAdapter
         }
+
+        // Setup swipe refresh
+        binding.swipeRefresh.setOnRefreshListener {
+            recordViewModel.manualSync()
+        }
+        binding.swipeRefresh.setColorSchemeResources(
+            R.color.primary,
+            R.color.primary_variant,
+            R.color.secondary
+        )
     }
 
     private fun setupDateFilter() {
@@ -83,6 +136,10 @@ class HomeFragment : Fragment() {
             setOnClickListener {
                 showDatePicker()
             }
+        }
+
+        binding.btnSort.setOnClickListener {
+            showSortOptionDialog()
         }
 
         binding.btnLabelManagement.setOnClickListener {
@@ -95,7 +152,37 @@ class HomeFragment : Fragment() {
             startActivity(intent)
         }
 
+        // 加载保存的排序选项
+        loadSavedSortOption()
         loadRecords(null)
+    }
+
+    private fun loadSavedSortOption() {
+        val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        currentSortIndex = prefs.getInt(KEY_SORT_OPTION, 0)
+        recordViewModel.setSortOption(sortOptions[currentSortIndex])
+    }
+
+    private fun saveSortOption(index: Int) {
+        val prefs = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putInt(KEY_SORT_OPTION, index).apply()
+    }
+
+    private fun showSortOptionDialog() {
+        val sortTitles = sortOptions.map { it.title }.toTypedArray()
+        AlertDialog.Builder(requireContext())
+            .setTitle("选择排序方式")
+            .setSingleChoiceItems(sortTitles, currentSortIndex) { dialog, which ->
+                if (which != currentSortIndex) {
+                    currentSortIndex = which
+                    val sortOption = sortOptions[which]
+                    recordViewModel.setSortOption(sortOption)
+                    saveSortOption(which)
+                    loadRecords(selectedDate)
+                }
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun showDatePicker() {
@@ -128,9 +215,17 @@ class HomeFragment : Fragment() {
     private fun loadRecords(selectedDate: String?) {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
+                // 检查用户是否已登录
+                if (!recordViewModel.isLoggedIn()) {
+                    binding.recyclerViewRecords.visibility = View.GONE
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = "请先登录\n点击下方 + 按钮去登录"
+                    return@launch
+                }
+
                 val recordsWithLabels = recordViewModel.getRecordsWithLabelsByDate(
-                    RecordViewModel.DEFAULT_USER_ID,
-                    selectedDate
+                    selectedDate,
+                    sortOptions[currentSortIndex]
                 )
 
                 if (recordsWithLabels.isEmpty()) {
@@ -145,6 +240,7 @@ class HomeFragment : Fragment() {
             } catch (e: Exception) {
                 binding.recyclerViewRecords.visibility = View.GONE
                 binding.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.text = "加载失败：${e.message}"
             }
         }
     }
@@ -211,16 +307,16 @@ class HomeFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 recordIds.forEach { recordId ->
-                    recordViewModel.deleteRecordById(recordId)
+                    recordViewModel.deleteRecordWithSync(recordId)
                 }
 
-                // Exit selection mode
+                // 等待同步完成后退出选择模式
                 selectionMode = false
                 recordAdapter.setSelectionMode(false)
                 binding.layoutBottomActions.visibility = View.GONE
                 binding.btnSelectMode.setImageResource(R.drawable.ic_more)
 
-                // Reload records
+                // 重新加载记录
                 loadRecords(selectedDate)
             } catch (e: Exception) {
                 // Handle error
@@ -230,7 +326,8 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        setupDateFilter()
+        loadSavedSortOption()
+        loadRecords(selectedDate)
     }
 
     override fun onDestroyView() {

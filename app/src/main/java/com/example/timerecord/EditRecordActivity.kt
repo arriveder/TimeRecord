@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class EditRecordActivity : AppCompatActivity() {
+class EditRecordActivity : BaseActivity() {
 
     private val viewModel: RecordViewModel by viewModels()
     private val selectedLabelIds = mutableSetOf<String>()
@@ -245,8 +245,7 @@ class EditRecordActivity : AppCompatActivity() {
             return
         }
 
-        viewModel.createLabel(
-            userId = RecordViewModel.DEFAULT_USER_ID,
+        viewModel.createLabelWithSync(
             name = labelName,
             color = getRandomColor()
         )
@@ -255,7 +254,7 @@ class EditRecordActivity : AppCompatActivity() {
     private fun saveRecord() {
         val note = etNote.text?.toString()?.trim()?.ifEmpty { null }
 
-        viewModel.updateRecord(
+        viewModel.updateRecordWithSync(
             recordId = recordId,
             note = note,
             labelIds = selectedLabelIds.toList()

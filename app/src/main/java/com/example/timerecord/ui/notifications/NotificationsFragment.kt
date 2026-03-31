@@ -1,5 +1,6 @@
 package com.example.timerecord.ui.notifications
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.timerecord.R
 import com.example.timerecord.RecordViewModel
+import com.example.timerecord.SettingsActivity
 import com.example.timerecord.adapter.DateStat
 import com.example.timerecord.adapter.DateStatAdapter
 import com.example.timerecord.adapter.LabelStat
@@ -40,8 +43,16 @@ class NotificationsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[RecordViewModel::class.java]
 
+        setupSettingsButton()
         setupRecyclerViews()
         loadStatistics()
+    }
+
+    private fun setupSettingsButton() {
+        binding.btnSettings.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupRecyclerViews() {

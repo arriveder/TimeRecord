@@ -31,4 +31,7 @@ interface UserDao {
 
     @Query("DELETE FROM users WHERE id = :id")
     suspend fun deleteUserById(id: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateUser(user: User)
 }

@@ -15,7 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
-class LabelManagementActivity : AppCompatActivity() {
+class LabelManagementActivity : BaseActivity() {
 
     private val viewModel: RecordViewModel by viewModels()
     private lateinit var binding: ActivityLabelManagementBinding
@@ -52,6 +52,11 @@ class LabelManagementActivity : AppCompatActivity() {
         binding.recyclerViewLabels.apply {
             layoutManager = LinearLayoutManager(this@LabelManagementActivity)
             adapter = labelAdapter
+        }
+
+        // 设置添加标签按钮点击事件
+        binding.fabAddLabel.setOnClickListener {
+            showAddLabelDialog()
         }
     }
 
@@ -113,7 +118,7 @@ class LabelManagementActivity : AppCompatActivity() {
                     return@setPositiveButton
                 }
 
-                viewModel.updateLabel(label.id, newName)
+                viewModel.updateLabelWithSync(label.id, newName)
             }
             .setNegativeButton("取消", null)
             .show()
@@ -146,10 +151,49 @@ class LabelManagementActivity : AppCompatActivity() {
                 .setTitle("删除确认")
                 .setMessage(message)
                 .setPositiveButton("删除") { _, _ ->
-                    viewModel.deleteLabel(label.id)
+                    viewModel.deleteLabelWithSync(label.id)
                 }
                 .setNegativeButton("取消", null)
                 .show()
+        }
+    }
+
+    private fun showAddLabelDialog() {
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_label, null)
+        val etLabelName = dialogView.findViewById<TextInputEditText>(R.id.et_label_name)
+
+        builder.setView(dialogView)
+            .setTitle("创建新标签")
+            .setPositiveButton("创建") { _, _ ->
+                val labelName = etLabelName.text?.toString()?.trim()
+                if (labelName.isNullOrEmpty()) {
+                    Toast.makeText(this, "标签名称不能为空", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                if (labelName.length > 20) {
+                    Toast.makeText(this, "标签名称不能超过 20 个字符", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                viewModel.createLabelWithSync(labelName)
+            }
+            .setNegativeButton("取消", null)
+            .show()
+
+        // Observe create result
+        viewModel.createLabelResult.observe(this) { result ->
+            result.onSuccess {
+                Snackbar.make(binding.root, "标签创建成功", Snackbar.LENGTH_SHORT).show()
+                loadLabels()
+            }.onFailure { error ->
+                val message = when (error.message) {
+                    "Label already exists" -> "标签名称已存在"
+                    else -> "创建失败：${error.message}"
+                }
+                Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 

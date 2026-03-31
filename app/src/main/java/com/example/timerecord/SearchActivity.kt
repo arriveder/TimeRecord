@@ -13,7 +13,7 @@ import com.example.timerecord.databinding.ActivitySearchBinding
 import com.example.timerecord.util.SearchHistoryManager
 import com.google.android.material.chip.Chip
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySearchBinding
     private lateinit var searchHistoryManager: SearchHistoryManager

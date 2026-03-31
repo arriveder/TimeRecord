@@ -27,21 +27,6 @@
         android:textColor="@color/text_primary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_label_management"
-        tools:targetApi="m" />
-
-    <!-- Label management button -->
-    <ImageButton
-        android:id="@+id/btn_label_management"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="@dimen/spacing_normal"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="标签管理"
-        android:padding="12dp"
-        android:src="@drawable/ic_tag"
-        app:tint="@color/text_secondary"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_search"
         tools:targetApi="m" />
 
@@ -57,6 +42,36 @@
         android:src="@drawable/ic_search"
         app:tint="@color/text_secondary"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_sort"
+        tools:targetApi="m" />
+
+    <!-- Sort button -->
+    <ImageButton
+        android:id="@+id/btn_sort"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="排序"
+        android:padding="12dp"
+        android:src="@drawable/ic_sort"
+        app:tint="@color/text_secondary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_label_management"
+        tools:targetApi="m" />
+
+    <!-- Label management button -->
+    <ImageButton
+        android:id="@+id/btn_label_management"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="标签管理"
+        android:padding="12dp"
+        android:src="@drawable/ic_tag"
+        app:tint="@color/text_secondary"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btn_select_mode"
         tools:targetApi="m" />
 
@@ -68,7 +83,7 @@
         android:layout_marginEnd="@dimen/spacing_loose"
         android:layout_marginTop="@dimen/spacing_normal"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="选择模式"
+        android:contentDescription="更多"
         android:padding="12dp"
         android:src="@drawable/ic_more"
         app:tint="@color/text_secondary"
@@ -77,19 +92,25 @@
         tools:targetApi="m" />
 
     <!-- Record list -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_records"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/spacing_tight"
-        android:clipToPadding="false"
-        android:paddingBottom="@dimen/spacing_tight"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tv_date_filter"
         app:layout_constraintBottom_toTopOf="@id/layout_bottom_actions"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/item_record" />
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_records"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/spacing_tight"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_record" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Empty state -->
     <TextView
